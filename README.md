@@ -19,7 +19,7 @@ The features of *gotcha* are:
 ## How to install
 
 ### Github app
-First, go to your profile *Settings* &#8594; *Developer Settings*. Then a github app *Gotcha* :smiley:.
+First, go to your profile *Settings* &#8594; *Developer Settings*. Then create a github app called *Gotcha* :smiley:.
 
 Fill in the necessary information to create the app.
 ![install-1](docs/imgs/install-1.png)
