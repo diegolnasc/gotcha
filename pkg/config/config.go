@@ -58,14 +58,16 @@ type Github struct {
 	Events             []string `yaml:"events"`
 }
 
-func (c *Settings) GetConf() *Settings {
-	yamlFile, err := ioutil.ReadFile("build/config.yaml")
+func (c *Settings) ReadConf() {
+	yamlFile, err := ioutil.ReadFile("build/config-local.yaml")
 	if err != nil {
-		log.Printf("yamlFile not found #%v ", err)
+		yamlFile, err = ioutil.ReadFile("build/config.yaml")
+		if err != nil {
+			log.Panic("yamlFile not found: ", err)
+		}
 	}
 	err = yaml.Unmarshal(yamlFile, c)
 	if err != nil {
 		log.Fatalf("error reading the yamlFile %v", err)
 	}
-	return c
 }

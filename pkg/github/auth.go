@@ -25,6 +25,31 @@ func getOwner(auth *config.Settings) (*string, error) {
 	return nil, errors.New("owner not configured")
 }
 
+func isUserAuthorized(auth *config.Settings, user *string, repo *string) bool {
+	result := false
+	if user != nil && repo != nil {
+		for _, u := range auth.Layout.Administration.Permission.Users {
+			if u == *user {
+				result = true
+				break
+			}
+		}
+		if !result {
+			for _, r := range auth.Layout.Administration.Permission.Repositories {
+				if r.Repository.Name == *repo {
+					for _, u := range r.Repository.Users {
+						if u == *user {
+							result = true
+							break
+						}
+					}
+				}
+			}
+		}
+	}
+	return result
+}
+
 func New(auth *config.Settings) *Worker {
 	var appTransport *ghinstallation.AppsTransport
 	var installationTransport *ghinstallation.Transport
