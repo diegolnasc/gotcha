@@ -1,7 +1,14 @@
 FROM golang:alpine AS builder
-COPY . $GOPATH/gotcha/
+
+ARG BINARY_FOLDER=bin
+ARG BINARY_NAME=gotcha
+ARG GOOS=linux
+ARG GOARCH=amd64
+
 WORKDIR $GOPATH/gotcha
+COPY . $GOPATH/gotcha/
 RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/gotcha ./cmd/main.go
+RUN go fmt ./cmd/ ./pkg/config/ ./pkg/github/
+RUN CGO_ENABLED=0 GOOS=${GOOS} GOARCH=${GOARCH} go build -ldflags="-s -w" -o ${BINARY_FOLDER}/${BINARY_NAME} ./cmd/main.go
 EXPOSE 3000
-ENTRYPOINT ["./bin/gotcha"] 
+ENTRYPOINT ["./${BINARY_FOLDER}/${BINARY_NAME}"] 

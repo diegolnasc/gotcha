@@ -11,8 +11,8 @@
 ## We Develop and growth with Github
 We use github to host code, to track issues and feature requests, as well as accept pull requests.
 
-## We use [Github Flow](https://guides.github.com/introduction/flow/index.html), So all code changes happen through Pull Requests
-Pull requests are the best way to propose changes to the codebase (we use [Github Flow](https://guides.github.com/introduction/flow/index.html)). We actively welcome your pull requests:
+## We use [GitHub Flow](https://guides.github.com/introduction/flow/index.html), So all code changes happen through Pull Requests
+Pull requests are the best way to propose changes to the codebase (we use [GitHub Flow](https://guides.github.com/introduction/flow/index.html)). We actively welcome your pull requests:
 
 1. Fork the repo and create your branch from `main`.
 2. Prefer write the commits using [Convetional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
@@ -21,10 +21,10 @@ Pull requests are the best way to propose changes to the codebase (we use [Githu
 5. Issue that pull request!
 
 ## Any contributions you make will be under the Apache Software License
-In short, when you submit code changes, your submissions are understood to be under the same [Apache 2.0 January 2004](https://github.com/dieolnasc/gotcha-bot/blob/main/LICENSE/) that covers the project. Feel free to contact the maintainers if that's a concern.
+In short, when you submit code changes, your submissions are understood to be under the same [Apache 2.0 January 2004](https://github.com/diegolnasc/gotcha/blob/main/LICENSE/) that covers the project. Feel free to contact the maintainers if that's a concern.
 
-## Report bugs using Github's [issues](https://github.com/diegolnasc/gotcha-bot/issues)
-We use GitHub issues to track public bugs. Report a bug by [opening a new issue](https://github.com/diegolnasc/gotcha-bot/issues/new); it's that easy!
+## Report bugs using GitHub's [issues](https://github.com/diegolnasc/gotcha/issues)
+We use GitHub issues to track public bugs. Report a bug by [opening a new issue](https://github.com/diegolnasc/gotcha/issues/new); it's that easy!
 
 ## Write bug reports with detail, background and sample
 [This is an example](https://github.com/stevemao/github-issue-templates/blob/master/bugs-only/ISSUE_TEMPLATE.md) of a bug report.
