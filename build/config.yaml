@@ -1,0 +1,32 @@
+layout:
+    administration:
+        permission:
+            users:
+                - diegolnasc
+            repositories:
+                - repository:
+                    name : trial
+                    users:
+                        - diegolnasc
+    pullRequest:
+        approveCommand: lgtm
+        reRunTestSuiteCommand: rerun testsuite
+        testSuite:
+            namePattern: (?P<type>feat|fix|refactor|style|docs|build)(?P<separator>:) (?P<body>.+)
+            reviewers: false
+            assignees: true
+            labels: true
+
+github:
+    appId: 12345
+    organization: 
+    user: diegolnasc
+    webhookSecret: secret
+    privateKeyLocation: 
+    privateKey:
+    events: 
+        - issue_comment
+        - pull_request
+        - pull_request_review_comment
+        - pull_request_review
+        - check_run
