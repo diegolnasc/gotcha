@@ -31,12 +31,12 @@ func (w *Worker) processIssueCommentEvent(p *ghwebhooks.IssueCommentPayload) {
 }
 
 func (w *Worker) processCheckRunEvent(p *ghwebhooks.CheckRunPayload) {
-	owner, _ := getOwner(&w.Config)
-	pullRequest, err := w.GetPullRequest(*owner, p.Repository.Name, int(p.CheckRun.PullRequests[0].Number))
-	if err != nil {
-		return
-	}
 	if p.CheckRun.App.ID == int64(w.Config.Github.AppID) {
+		owner, _ := getOwner(&w.Config)
+		pullRequest, err := w.GetPullRequest(*owner, p.Repository.Name, int(p.CheckRun.PullRequests[0].Number))
+		if err != nil {
+			return
+		}	
 		w.processCheckRun(owner, pullRequest, p)
 	}
 }
