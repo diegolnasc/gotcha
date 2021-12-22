@@ -70,3 +70,27 @@ func (w *Worker) GetPullRequest(owner string, repo string, number int) (*v41.Pul
 	}
 	return resp, err
 }
+
+func (w *Worker) MergePullRequest(owner string, repo string, number int, commitMessage string, options v41.PullRequestOptions) (*v41.PullRequestMergeResult, error) {
+	resp, _, err := w.Client.PullRequests.Merge(context.TODO(), owner, repo, number, commitMessage, &options)
+	if err != nil {
+		log.Printf("error merging pull request: %v\n", err)
+	}
+	return resp, err
+}
+
+func (w *Worker) GetRef(owner string, repo string, ref string) (*v41.Reference, error) {
+	resp, _, err := w.Client.Git.GetRef(context.TODO(), owner, repo, ref)
+	if err != nil {
+		log.Printf("error getting ref: %v\n", err)
+	}
+	return resp, err
+}
+
+func (w *Worker) DeleteRef(owner string, repo string, ref string) (*v41.Response, error) {
+	resp, err := w.Client.Git.DeleteRef(context.TODO(), owner, repo, ref)
+	if err != nil {
+		log.Printf("error deleting ref: %v\n", err)
+	}
+	return resp, err
+}

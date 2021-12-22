@@ -12,6 +12,8 @@ import (
 
 func (w *Worker) processIssueComment(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.IssueCommentPayload) {
 	w.approve(owner, pullRequest, p)
+	w.merge(owner, pullRequest, p)
+	w.mergeAndDelete(owner, pullRequest, p)
 	w.reRunLaboratoryTest(owner, pullRequest, p)
 }
 
@@ -30,9 +32,29 @@ func (w *Worker) approve(owner *string, pullRequest *v41.PullRequest, p *ghwebho
 	}
 }
 
+func (w *Worker) merge(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.IssueCommentPayload) {
+	if pullRequest != nil {
+		if strings.EqualFold(p.Comment.Body, w.Config.Layout.PullRequest.MergeCommand) {
+			w.MergePullRequest(*owner, p.Repository.Name, *pullRequest.Number, "", v41.PullRequestOptions{})
+		}
+	}
+}
+
+func (w *Worker) mergeAndDelete(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.IssueCommentPayload) {
+	if pullRequest != nil {
+		if strings.EqualFold(p.Comment.Body, w.Config.Layout.PullRequest.MergeAndDeleteCommand) {
+			if _, err := w.MergePullRequest(*owner, p.Repository.Name, *pullRequest.Number, "", v41.PullRequestOptions{}); err == nil {
+				if *pullRequest.Base.Repo.Name == *pullRequest.Head.Repo.Name {
+					w.DeleteRef(*owner, p.Repository.Name, fmt.Sprintf("heads/%s", *pullRequest.Head.Ref))
+				}
+			}
+		}
+	}
+}
+
 func (w *Worker) reRunLaboratoryTest(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.IssueCommentPayload) {
 	if pullRequest != nil {
-		if strings.EqualFold(p.Comment.Body, w.Config.Layout.PullRequest.ReRunTestSuiteCommand) {
+		if strings.EqualFold(p.Comment.Body, w.Config.Layout.PullRequest.RunTestSuiteCommand) {
 			pullRequestNumber := strconv.Itoa(int(*pullRequest.Number))
 			w.CreateCheckRun(*owner, p.Repository.Name, v41.CreateCheckRunOptions{
 				Name:       "Laboratory test",

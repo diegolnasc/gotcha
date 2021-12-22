@@ -10,7 +10,9 @@ layout:
                         - diegolnasc
     pullRequest:
         approveCommand: lgtm
-        reRunTestSuiteCommand: rerun testsuite
+        runTestSuiteCommand: run testsuite
+        mergeCommand: merge
+        mergeAndDeleteCommand: merge and delete
         testSuite:
             namePattern: (?P<type>feat|fix|refactor|style|docs|build)(?P<separator>:) (?P<body>.+)
             reviewers: false
