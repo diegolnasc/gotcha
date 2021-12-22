@@ -3,6 +3,7 @@ package github
 import (
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
 
 	ghwebhooks "github.com/go-playground/webhooks/v6/github"
@@ -15,24 +16,31 @@ func (w *Worker) processIssueComment(owner *string, pullRequest *v41.PullRequest
 }
 
 func (w *Worker) approve(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.IssueCommentPayload) {
-	if strings.EqualFold(p.Comment.Body, w.Config.Layout.PullRequest.ApproveCommand) {
-		message := fmt.Sprintf("[%s] Looks Good To Me!", p.Issue.User.Login)
-		_, err := w.PullRequestCreateReview(*owner, p.Repository.Name, *pullRequest.Number, v41.PullRequestReviewRequest{
-			Body:  &message,
-			Event: v41.String("APPROVE"),
-		})
-		if err != nil {
-			log.Printf("error creview: %v\n", err)
+	if pullRequest != nil {
+		if strings.EqualFold(p.Comment.Body, w.Config.Layout.PullRequest.ApproveCommand) {
+			message := fmt.Sprintf("[%s] Looks Good To Me!", p.Issue.User.Login)
+			_, err := w.PullRequestCreateReview(*owner, p.Repository.Name, *pullRequest.Number, v41.PullRequestReviewRequest{
+				Body:  &message,
+				Event: v41.String("APPROVE"),
+			})
+			if err != nil {
+				log.Printf("error creview: %v\n", err)
+			}
 		}
 	}
 }
 
 func (w *Worker) reRunLaboratoryTest(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.IssueCommentPayload) {
-	if strings.EqualFold(p.Comment.Body, w.Config.Layout.PullRequest.ReRunTestSuiteCommand) {
-		w.CreateCheckRun(*owner, p.Repository.Name, v41.CreateCheckRunOptions{
-			Name:    "Laboratory test",
-			Status:  v41.String("in_progress"),
-			HeadSHA: *pullRequest.Head.SHA,
-		})
+	if pullRequest != nil {
+		if strings.EqualFold(p.Comment.Body, w.Config.Layout.PullRequest.ReRunTestSuiteCommand) {
+			pullRequestNumber := strconv.Itoa(int(*pullRequest.Number))
+			w.CreateCheckRun(*owner, p.Repository.Name, v41.CreateCheckRunOptions{
+				Name:       "Laboratory test",
+				Status:     v41.String("in_progress"),
+				HeadSHA:    *pullRequest.Head.SHA,
+				DetailsURL: pullRequest.HTMLURL,
+				ExternalID: &pullRequestNumber,
+			})
+		}
 	}
 }
