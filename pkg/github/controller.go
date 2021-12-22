@@ -39,6 +39,14 @@ func (w *Worker) AddLabels(owner string, repo string, number int, labels []strin
 	return resp, err
 }
 
+func (w *Worker) GetCheckRun(owner string, repo string, checkrunId int64) (*v41.CheckRun, error) {
+	resp, _, err := w.Client.Checks.GetCheckRun(context.TODO(), owner, repo, checkrunId)
+	if err != nil {
+		log.Printf("error creating checkrun: %v\n", err)
+	}
+	return resp, err
+}
+
 func (w *Worker) CreateCheckRun(owner string, repo string, checkrun v41.CreateCheckRunOptions) (*v41.CheckRun, error) {
 	resp, _, err := w.Client.Checks.CreateCheckRun(context.TODO(), owner, repo, checkrun)
 	if err != nil {
