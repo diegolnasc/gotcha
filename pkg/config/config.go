@@ -37,7 +37,9 @@ type Repository struct {
 
 type PullRequest struct {
 	ApproveCommand        string    `yaml:"approveCommand"`
-	ReRunTestSuiteCommand string    `yaml:"reRunTestSuiteCommand"`
+	RunTestSuiteCommand   string    `yaml:"runTestSuiteCommand"`
+	MergeCommand          string    `yaml:"mergeCommand"`
+	MergeAndDeleteCommand string    `yaml:"mergeAndDeleteCommand"`
 	TestSuite             TestSuite `yaml:"testSuite"`
 }
 

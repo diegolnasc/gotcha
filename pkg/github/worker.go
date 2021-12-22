@@ -18,7 +18,7 @@ func (w *Worker) processIssueCommentEvent(p *ghwebhooks.IssueCommentPayload) {
 		var pullRequest *v41.PullRequest
 		owner, _ := getOwner(&w.Config)
 		if len(p.Issue.PullRequest.HTMLURL) > 0 {
-			if pullRequestNumber, err := strconv.Atoi(strings.Split(p.Issue.PullRequest.HTMLURL, "/")[6]); err != nil {
+			if pullRequestNumber, err := strconv.Atoi(strings.Split(p.Issue.PullRequest.HTMLURL, "/")[6]); err == nil {
 				pullRequest, err = w.GetPullRequest(*owner, p.Repository.Name, pullRequestNumber)
 				if err != nil {
 					return
