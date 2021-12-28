@@ -36,6 +36,8 @@ type Repository struct {
 }
 
 type PullRequest struct {
+	EnableOverview        bool      `yaml:"enableOverview"`
+	OverViewCommand       string    `yaml:"overViewCommand"`
 	ApproveCommand        string    `yaml:"approveCommand"`
 	RunTestSuiteCommand   string    `yaml:"runTestSuiteCommand"`
 	MergeCommand          string    `yaml:"mergeCommand"`

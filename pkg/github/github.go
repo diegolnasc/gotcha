@@ -11,6 +11,10 @@ import (
 	v41 "github.com/google/go-github/v41/github"
 )
 
+type service struct {
+	w Worker
+}
+
 type Worker struct {
 	Config config.Settings
 	Client v41.Client
