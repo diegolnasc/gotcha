@@ -1,6 +1,6 @@
 module github.com/diegolnasc/gotcha
 
-go 1.16
+go 1.17
 
 require (
 	github.com/bradleyfalzon/ghinstallation/v2 v2.0.3
