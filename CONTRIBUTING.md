@@ -9,10 +9,7 @@
 - Becoming a maintainer
 
 ## We Develop and growth with Github
-We use github to host code, to track issues and feature requests, as well as accept pull requests.
-
-## We use [GitHub Flow](https://guides.github.com/introduction/flow/index.html), So all code changes happen through Pull Requests
-Pull requests are the best way to propose changes to the codebase (we use [GitHub Flow](https://guides.github.com/introduction/flow/index.html)). We actively welcome your pull requests:
+Pull requests are the best way to propose changes to the codebase. We actively welcome your pull requests:
 
 1. Fork the repo and create your branch from `main`.
 2. Prefer write the commits using [Convetional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
