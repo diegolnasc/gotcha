@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/bradleyfalzon/ghinstallation"
+	"github.com/bradleyfalzon/ghinstallation/v2"
 	"github.com/diegolnasc/gotcha/pkg/config"
 	v41 "github.com/google/go-github/v41/github"
 )
