@@ -1,31 +1,54 @@
 <h2 align="center"> Gotcha Bot :robot: </h2>
 <h2 align="center">A app to automate engineers tasks</h2>
 
+![License](https://img.shields.io/github/license/diegolnasc/gotcha?style=plastic)
+![go-version](https://img.shields.io/static/v1?label=golang&message=1.17&color=informational&style=plastic)
+[![gotcha release (latest)](https://img.shields.io/github/v/release/diegolnasc/gotcha?sort=semver&style=plastic)](https://github.com/diegolnasc/gotcha/releases)
+
 ---
 ## What can :robot: do?
 
 > *Gotcha*, is a app and works on fired events. For more details on a GitHub app, please check [here](https://docs.github.com/en/developers/apps/getting-started-with-apps/about-apps).
 
-The features of *Gotcha* are:
+The main _Gotcha's_ features are:
 
-- Ensure the **pull request** name is valid.
+- Ensure the **pull request** report (diff).
+- Ensure the **pull request** name pattern is valid.
 - Ensure the **pull request** labels are valid.
 - Ensure the **pull request** assigners are valid.
 - Ensure the **pull request** reviewers are valid.
 
 
-*Gotcha* implements the features as a test suite. Therefore, adding a new functionality for validation is very simple and practical.
+*Gotcha* implements the some of the features as a test suite. Therefore, adding a new functionality for validation is very simple and practical.
+
+## Examples :eye_speech_bubble:
+
+- **Pull Request Report**
+
+![pr-overview](docs/imgs/pr-overview.png)
+
+- **Pull Request Test Validator**
+
+Fail
+
+![pr-name-pattern-fail](docs/imgs/pr-name-pattern-fail.png)
+
+---
+
+Pass
+
+![pr-name-pattern-pass](docs/imgs/pr-name-pattern-pass.png)
 
 ## How to install
 
 ### GitHub app
-First, go to your profile *Settings* &#8594; *Developer Settings*. Then create a GitHub app called *Gotcha* :smiley:.
+First, go to your profile *Settings* &#8594; *Developer Settings*. Then create a GitHub app for *Gotcha* :smiley:.
 
 Fill in the necessary information to create the app.  
 ![install-1](docs/imgs/install-1.png)
 ![install-2](docs/imgs/install-2.png)
 
-To test without hosting or exposing your application on the internet, a suggestion is to use https://smee.io
+> To test without hosting or exposing your application on the internet, a suggestion is to use https://smee.io
 
 Next, enable the following permissions:
 
@@ -47,25 +70,27 @@ Afterwards, generate a private key for the bot.
 
 ### Gotcha Settings
 
-In the *build* folder, you will find a file called **config.yaml** which is intended to configure some features of Gotcha.
+In the *build* folder, you will find a file called **config.yaml** which is intended to configure some _Gotcha's_ features.
 
 - In **Layout**, you'll find general *Gotcha* settings.
 - In **GitHub**, you'll find general GitHub settings.
 
 **Layout**: 
 
-| Level                                                  | Description                                                                                                                                                                                           | Type          | Default                                                                                             |
-|--------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|-----------------------------------------------------------------------------------------------------|
-| administration &#8594; permission                      | Users who are allowed to execute commands such as pull request approval, test re-runs and others. <br/> The permissions here are one level above the *repositories* item, so they overlap the others. | list(string)  | None                                                                                                |
-| administration &#8594; permission &#8594; repositories | Users with permissions on certain repositories.                                                                                                                                                       | list(object)  | None                                                                                                |
-| pullRequest &#8594; approveCommand                     | Command for approval of the PR by *Gotcha*.                                                                                                                                                           | string        | lgtm                                                                                                |
-| pullRequest &#8594; runTestSuiteCommand                | Command to re-run the test suite.                                                                                                                                                                     | string        | run testsuite                                                                                       |
-| pullRequest &#8594; mergeCommand                       | Command for merge of the PR by *Gotcha*.                                                                                                                                                              | string        | merge                                                                                               |
-| pullRequest &#8594; mergeAndDeleteCommand              | Command for merge and delete ref branch of the PR by *Gotcha*.                                                                                                                                        | string        | merge and delete                                                                                    |
-| pullRequest &#8594; testSuite &#8594; namePattern      | Format (regex) that pull request name must follow.<br/> Default value is based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).                                             | string(regex) | (?P<type>feat&#124;fix&#124;refactor&#124;style&#124;docs&#124;build)(?P<separator>:) (?P<body>.+)' |
-| pullRequest &#8594; testSuite &#8594; reviewers        | Need to have reviewers on the pull request.                                                                                                                                                           | bool          | false                                                                                               |
-| pullRequest &#8594; testSuite &#8594; assignees        | Need to have assignees on the pull request.                                                                                                                                                           | bool          | true                                                                                                |
-| pullRequest &#8594; testSuite &#8594; labels           | Need to have labels on the pull request.                                                                                                                                                              | bool          | true                                                                                                |
+| Level                                                  | Description                                                                                                                                                                                           | Type          | Default                                                                                                        |
+|--------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|----------------------------------------------------------------------------------------------------------------|
+| administration &#8594; permission                      | Users who are allowed to execute commands such as pull request approval, test re-runs and others. <br/> The permissions here are one level above the *repositories* item, so they overlap the others. | list(string)  | None                                                                                                           |
+| administration &#8594; permission &#8594; repositories | Users with permissions on certain repositories.                                                                                                                                                       | list(object)  | None                                                                                                           |
+| pullRequest &#8594; enableOverview                     | Enable pull request report (commits, diff, additions, deletes, extensions) overview.                                                                                                                  | bool          | true                                                                                                           |
+| pullRequest &#8594; overViewCommand                    | Command to re-run the pull request overview. The _enableOverview_ must be true.                                                                                                                       | string        | run overview                                                                                                   |
+| pullRequest &#8594; approveCommand                     | Command for approval of the PR by *Gotcha*.                                                                                                                                                           | string        | lgtm                                                                                                           |
+| pullRequest &#8594; runTestSuiteCommand                | Command to re-run the test suite.                                                                                                                                                                     | string        | run testsuite                                                                                                  |
+| pullRequest &#8594; mergeCommand                       | Command for merge of the PR by *Gotcha*.                                                                                                                                                              | string        | merge                                                                                                          |
+| pullRequest &#8594; mergeAndDeleteCommand              | Command for merge and delete ref branch of the PR by *Gotcha*.                                                                                                                                        | string        | merge and delete                                                                                               |
+| pullRequest &#8594; testSuite &#8594; namePattern      | Format (regex) that pull request name must follow.<br/> Default value is based on [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).                                             | string(regex) | (?P<type>feat&#124;fix&#124;refactor&#124;style&#124;docs&#124;build&#124;chore)(?P<separator>:) (?P<body>.+)' |
+| pullRequest &#8594; testSuite &#8594; reviewers        | Need to have reviewers on the pull request.                                                                                                                                                           | bool          | false                                                                                                          |
+| pullRequest &#8594; testSuite &#8594; assignees        | Need to have assignees on the pull request.                                                                                                                                                           | bool          | true                                                                                                           |
+| pullRequest &#8594; testSuite &#8594; labels           | Need to have labels on the pull request.                                                                                                                                                              | bool          | true                                                                                                           |
 
 
 **Github**:

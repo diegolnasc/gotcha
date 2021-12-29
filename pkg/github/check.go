@@ -9,34 +9,36 @@ import (
 	v41 "github.com/google/go-github/v41/github"
 )
 
+type CheckService service
+
 type checkRunResult struct {
 	title  string
 	passed bool
 	body   string
 }
 
-func (w *Worker) processCheckRun(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.CheckRunPayload) {
+func (s *CheckService) processCheckRun(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.CheckRunPayload) {
 	if p.Action == "created" {
-		result, overralResults := w.runTestSuite(owner, pullRequest, p)
-		w.updateCheckRunStatus(owner, pullRequest, p, overralResults)
-		w.printResults(owner, pullRequest, p, result, overralResults)
+		result, overralResults := s.runTestSuite(owner, pullRequest, p)
+		s.updateCheckRunStatus(owner, pullRequest, p, overralResults)
+		s.printResults(owner, pullRequest, p, result, overralResults)
 	}
 }
 
-func (w *Worker) runTestSuite(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.CheckRunPayload) ([]*checkRunResult, bool) {
+func (s *CheckService) runTestSuite(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.CheckRunPayload) ([]*checkRunResult, bool) {
 	var results []*checkRunResult
 	overralResults := true
-	if len(w.Config.Layout.PullRequest.TestSuite.NamePattern) > 0 {
-		results = append(results, w.isNamePatternValid(owner, pullRequest, p))
+	if len(s.w.Config.Layout.PullRequest.TestSuite.NamePattern) > 0 {
+		results = append(results, s.isNamePatternValid(owner, pullRequest, p))
 	}
-	if w.Config.Layout.PullRequest.TestSuite.Reviewers {
-		results = append(results, w.hasReviewers(owner, pullRequest, p))
+	if s.w.Config.Layout.PullRequest.TestSuite.Reviewers {
+		results = append(results, s.hasReviewers(owner, pullRequest, p))
 	}
-	if w.Config.Layout.PullRequest.TestSuite.Assignees {
-		results = append(results, w.hasAssignees(owner, pullRequest, p))
+	if s.w.Config.Layout.PullRequest.TestSuite.Assignees {
+		results = append(results, s.hasAssignees(owner, pullRequest, p))
 	}
-	if w.Config.Layout.PullRequest.TestSuite.Labels {
-		results = append(results, w.hasLabels(owner, pullRequest, p))
+	if s.w.Config.Layout.PullRequest.TestSuite.Labels {
+		results = append(results, s.hasLabels(owner, pullRequest, p))
 	}
 	for _, r := range results {
 		if !r.passed {
@@ -47,11 +49,11 @@ func (w *Worker) runTestSuite(owner *string, pullRequest *v41.PullRequest, p *gh
 	return results, overralResults
 }
 
-func (w *Worker) isNamePatternValid(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.CheckRunPayload) *checkRunResult {
-	match, _ := regexp.MatchString(w.Config.Layout.PullRequest.TestSuite.NamePattern, *pullRequest.Title)
+func (s *CheckService) isNamePatternValid(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.CheckRunPayload) *checkRunResult {
+	match, _ := regexp.MatchString(s.w.Config.Layout.PullRequest.TestSuite.NamePattern, *pullRequest.Title)
 	var body string
 	if !match {
-		body = fmt.Sprintf("The pull request format should be: [%s]", w.Config.Layout.PullRequest.TestSuite.NamePattern)
+		body = fmt.Sprintf("The pull request format should be: [%s]", s.w.Config.Layout.PullRequest.TestSuite.NamePattern)
 	}
 	return &checkRunResult{
 		title:  "Pull request pattern",
@@ -60,7 +62,7 @@ func (w *Worker) isNamePatternValid(owner *string, pullRequest *v41.PullRequest,
 	}
 }
 
-func (w *Worker) hasReviewers(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.CheckRunPayload) *checkRunResult {
+func (s *CheckService) hasReviewers(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.CheckRunPayload) *checkRunResult {
 	if len(pullRequest.RequestedReviewers) == 0 {
 		return &checkRunResult{
 			title:  "Reviewers",
@@ -74,7 +76,7 @@ func (w *Worker) hasReviewers(owner *string, pullRequest *v41.PullRequest, p *gh
 	}
 }
 
-func (w *Worker) hasAssignees(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.CheckRunPayload) *checkRunResult {
+func (s *CheckService) hasAssignees(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.CheckRunPayload) *checkRunResult {
 	if len(pullRequest.Assignees) == 0 {
 		return &checkRunResult{
 			title:  "Assignees",
@@ -88,7 +90,7 @@ func (w *Worker) hasAssignees(owner *string, pullRequest *v41.PullRequest, p *gh
 	}
 }
 
-func (w *Worker) hasLabels(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.CheckRunPayload) *checkRunResult {
+func (s *CheckService) hasLabels(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.CheckRunPayload) *checkRunResult {
 	if len(pullRequest.Labels) == 0 {
 		return &checkRunResult{
 			title:  "Labels",
@@ -102,20 +104,20 @@ func (w *Worker) hasLabels(owner *string, pullRequest *v41.PullRequest, p *ghweb
 	}
 }
 
-func (w *Worker) updateCheckRunStatus(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.CheckRunPayload, overralResults bool) {
+func (s *CheckService) updateCheckRunStatus(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.CheckRunPayload, overralResults bool) {
 	var conclusion string
 	if overralResults {
 		conclusion = "success"
 	} else {
 		conclusion = "failure"
 	}
-	w.UpdateCheckRun(*owner, p.Repository.Name, p.CheckRun.ID, v41.UpdateCheckRunOptions{
+	s.w.UpdateCheckRun(*owner, p.Repository.Name, p.CheckRun.ID, v41.UpdateCheckRunOptions{
 		Status:     v41.String("completed"),
 		Conclusion: &conclusion,
 	})
 }
 
-func (w *Worker) printResults(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.CheckRunPayload, results []*checkRunResult, overralResults bool) {
+func (s *CheckService) printResults(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.CheckRunPayload, results []*checkRunResult, overralResults bool) {
 	var title string
 	var body bytes.Buffer
 	if overralResults {
@@ -137,7 +139,7 @@ func (w *Worker) printResults(owner *string, pullRequest *v41.PullRequest, p *gh
 			body.WriteString(fmt.Sprintf("[:heavy_exclamation_mark:] **%s** &#8594; %s <br/>", r.title, r.body))
 		}
 	}
-	w.PullRequestCreateComment(*owner, p.Repository.Name, *pullRequest.Number, v41.IssueComment{
+	s.w.IssueCreateComment(*owner, p.Repository.Name, *pullRequest.Number, v41.IssueComment{
 		Body: v41.String(body.String()),
 	})
 }
