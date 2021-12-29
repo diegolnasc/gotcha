@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
 
@@ -15,7 +16,9 @@ const (
 )
 
 func main() {
-	startProvider(Provider("github"))
+	provider := flag.String("provider", "github", "Provider to run")
+	flag.Parse()
+	startProvider(Provider(*provider))
 	err := http.ListenAndServe(":3000", nil)
 	if err != nil {
 		log.Panic(err)

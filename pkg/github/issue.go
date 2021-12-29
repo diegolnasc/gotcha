@@ -10,18 +10,29 @@ import (
 	v41 "github.com/google/go-github/v41/github"
 )
 
-func (w *Worker) processIssueComment(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.IssueCommentPayload) {
-	w.approve(owner, pullRequest, p)
-	w.merge(owner, pullRequest, p)
-	w.mergeAndDelete(owner, pullRequest, p)
-	w.reRunLaboratoryTest(owner, pullRequest, p)
+type IssueService service
+
+func (s *IssueService) processIssueComment(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.IssueCommentPayload) {
+	s.reRunPullRequestOverview(owner, pullRequest, p)
+	s.approve(owner, pullRequest, p)
+	s.merge(owner, pullRequest, p)
+	s.mergeAndDelete(owner, pullRequest, p)
+	s.reRunLaboratoryTest(owner, pullRequest, p)
 }
 
-func (w *Worker) approve(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.IssueCommentPayload) {
+func (s *IssueService) reRunPullRequestOverview(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.IssueCommentPayload) {
 	if pullRequest != nil {
-		if strings.EqualFold(p.Comment.Body, w.Config.Layout.PullRequest.ApproveCommand) {
+		if strings.EqualFold(p.Comment.Body, s.w.Config.Layout.PullRequest.OverViewCommand) {
+			s.w.CreatePulllRequestOverviewComment(owner, p.Repository.Name, *pullRequest.Number)
+		}
+	}
+}
+
+func (s *IssueService) approve(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.IssueCommentPayload) {
+	if pullRequest != nil {
+		if strings.EqualFold(p.Comment.Body, s.w.Config.Layout.PullRequest.ApproveCommand) {
 			message := fmt.Sprintf("[%s] Looks Good To Me!", p.Issue.User.Login)
-			_, err := w.PullRequestCreateReview(*owner, p.Repository.Name, *pullRequest.Number, v41.PullRequestReviewRequest{
+			_, err := s.w.PullRequestCreateReview(*owner, p.Repository.Name, *pullRequest.Number, v41.PullRequestReviewRequest{
 				Body:  &message,
 				Event: v41.String("APPROVE"),
 			})
@@ -32,31 +43,31 @@ func (w *Worker) approve(owner *string, pullRequest *v41.PullRequest, p *ghwebho
 	}
 }
 
-func (w *Worker) merge(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.IssueCommentPayload) {
+func (s *IssueService) merge(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.IssueCommentPayload) {
 	if pullRequest != nil {
-		if strings.EqualFold(p.Comment.Body, w.Config.Layout.PullRequest.MergeCommand) {
-			w.MergePullRequest(*owner, p.Repository.Name, *pullRequest.Number, "", v41.PullRequestOptions{})
+		if strings.EqualFold(p.Comment.Body, s.w.Config.Layout.PullRequest.MergeCommand) {
+			s.w.MergePullRequest(*owner, p.Repository.Name, *pullRequest.Number, "", v41.PullRequestOptions{})
 		}
 	}
 }
 
-func (w *Worker) mergeAndDelete(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.IssueCommentPayload) {
+func (s *IssueService) mergeAndDelete(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.IssueCommentPayload) {
 	if pullRequest != nil {
-		if strings.EqualFold(p.Comment.Body, w.Config.Layout.PullRequest.MergeAndDeleteCommand) {
-			if _, err := w.MergePullRequest(*owner, p.Repository.Name, *pullRequest.Number, "", v41.PullRequestOptions{}); err == nil {
+		if strings.EqualFold(p.Comment.Body, s.w.Config.Layout.PullRequest.MergeAndDeleteCommand) {
+			if _, err := s.w.MergePullRequest(*owner, p.Repository.Name, *pullRequest.Number, "", v41.PullRequestOptions{}); err == nil {
 				if *pullRequest.Base.Repo.Name == *pullRequest.Head.Repo.Name {
-					w.DeleteRef(*owner, p.Repository.Name, fmt.Sprintf("heads/%s", *pullRequest.Head.Ref))
+					s.w.DeleteRef(*owner, p.Repository.Name, fmt.Sprintf("heads/%s", *pullRequest.Head.Ref))
 				}
 			}
 		}
 	}
 }
 
-func (w *Worker) reRunLaboratoryTest(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.IssueCommentPayload) {
+func (s *IssueService) reRunLaboratoryTest(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.IssueCommentPayload) {
 	if pullRequest != nil {
-		if strings.EqualFold(p.Comment.Body, w.Config.Layout.PullRequest.RunTestSuiteCommand) {
+		if strings.EqualFold(p.Comment.Body, s.w.Config.Layout.PullRequest.RunTestSuiteCommand) {
 			pullRequestNumber := strconv.Itoa(int(*pullRequest.Number))
-			w.CreateCheckRun(*owner, p.Repository.Name, v41.CreateCheckRunOptions{
+			s.w.CreateCheckRun(*owner, p.Repository.Name, v41.CreateCheckRunOptions{
 				Name:       "Laboratory test",
 				Status:     v41.String("in_progress"),
 				HeadSHA:    *pullRequest.Head.SHA,

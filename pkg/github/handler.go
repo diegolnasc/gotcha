@@ -28,11 +28,14 @@ func (w *Worker) Handler(response http.ResponseWriter, request *http.Request) {
 	}
 	switch payload := payload.(type) {
 	case ghwebhooks.PullRequestPayload:
-		go w.processPullRequestEvent(&payload)
+		service := &PullRequestService{w: *w}
+		go service.processPullRequestEvent(&payload)
 	case ghwebhooks.IssueCommentPayload:
-		go w.processIssueCommentEvent(&payload)
+		service := &IssueService{w: *w}
+		go service.processIssueCommentEvent(&payload)
 	case ghwebhooks.CheckRunPayload:
-		go w.processCheckRunEvent(&payload)
+		service := &CheckService{w: *w}
+		go service.processCheckRunEvent(&payload)
 	default:
 		log.Println("missing handler")
 	}

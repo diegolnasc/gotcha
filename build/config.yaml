@@ -9,6 +9,8 @@ layout:
                     users:
                         - diegolnasc
     pullRequest:
+        enableOverview: true
+        overViewCommand: run overview
         approveCommand: lgtm
         runTestSuiteCommand: run testsuite
         mergeCommand: merge
