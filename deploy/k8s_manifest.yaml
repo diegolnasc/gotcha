@@ -15,12 +15,14 @@ data:
                         users:
                             - diegolnasc
         pullRequest:
+            enableOverview: true
+            overViewCommand: run overview
             approveCommand: lgtm
             runTestSuiteCommand: run testsuite
             mergeCommand: merge
             mergeAndDeleteCommand: merge and delete
             testSuite:
-                namePattern: (?P<type>feat|fix|refactor|style|docs|build)(?P<separator>:) (?P<body>.+)
+                namePattern: (?P<type>feat|fix|refactor|style|docs|build|chore)(?P<separator>:) (?P<body>.+)
                 reviewers: false
                 assignees: true
                 labels: true
