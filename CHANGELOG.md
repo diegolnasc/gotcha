@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://www.github.com/diegolnasc/gotcha/compare/v1.1.0...v1.2.0) (2021-12-31)
+
+
+### Features
+
+* lint workflow ([ddf42f2](https://www.github.com/diegolnasc/gotcha/commit/ddf42f23c086b27c53b8008a349680a10dfa3c96))
+* lint workflow ([2800c56](https://www.github.com/diegolnasc/gotcha/commit/2800c56ecefc351bb5e7125d9c53376bfb3155d6))
+
 ## [1.1.0](https://www.github.com/diegolnasc/gotcha/compare/v1.0.0...v1.1.0) (2021-12-31)
 
 
