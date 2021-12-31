@@ -11,13 +11,13 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// Settings represents the configuration aspects and authorization.
+// Settings represents the configuration and authorization aspects.
 type Settings struct {
 	Layout Layout `yaml:"layout"`
 	Github Github `yaml:"github"`
 }
 
-// Layout represents permissions level and pull request funcionalities.
+// Layout represents permissions level and pull request functionalities.
 type Layout struct {
 	Administration Administration `yaml:"administration"`
 	PullRequest    PullRequest    `yaml:"pullRequest"`
@@ -28,7 +28,7 @@ type Administration struct {
 	Permission Permission `yaml:"permission"`
 }
 
-// Permission represents high level user's permissions and repository permission.
+// Permission represents high level user's and repository permissions.
 type Permission struct {
 	Users        []string       `yaml:"users"`
 	Repositories []Repositories `yaml:"repositories"`
@@ -45,7 +45,7 @@ type Repository struct {
 	Users []string `yaml:"users"`
 }
 
-// PullRequest represents commands and funcionalities.
+// PullRequest represents commands and functionalities.
 type PullRequest struct {
 	EnableOverview        bool      `yaml:"enableOverview"`
 	OverViewCommand       string    `yaml:"overViewCommand"`
@@ -56,7 +56,7 @@ type PullRequest struct {
 	TestSuite             TestSuite `yaml:"testSuite"`
 }
 
-// TestSuite represents configuration for test cases.
+// TestSuite represents configuration for the test cases.
 type TestSuite struct {
 	NamePattern string `yaml:"namePattern"`
 	Reviewers   bool   `yaml:"reviewers"`
@@ -75,7 +75,7 @@ type Github struct {
 	Events             []string `yaml:"events"`
 }
 
-// ReadConf initialize the yaml configuration
+// ReadConf initialize the configuration.
 func (c *Settings) ReadConf() {
 	yamlFile, err := ioutil.ReadFile("build/config-local.yaml")
 	if err != nil {
