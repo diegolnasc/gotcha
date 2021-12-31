@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.0](https://www.github.com/diegolnasc/gotcha/compare/v1.0.0...v1.1.0) (2021-12-31)
+
+
+### Features
+
+* go version update ([7ebb2fd](https://www.github.com/diegolnasc/gotcha/commit/7ebb2fdc23f7d6c728bf901b0f1b5a47ab2aba90))
+* issue templates ([#12](https://www.github.com/diegolnasc/gotcha/issues/12)) ([5d3f6e7](https://www.github.com/diegolnasc/gotcha/commit/5d3f6e7819ef886f7c8b971b4297d033487baa6c))
+* update go version to 1.17 ([#7](https://www.github.com/diegolnasc/gotcha/issues/7)) ([22e0ae7](https://www.github.com/diegolnasc/gotcha/commit/22e0ae7aee8f95ad06492c98dc1298415be27a9a))
+
 ## 1.0.0 (2021-12-28)
 
 
