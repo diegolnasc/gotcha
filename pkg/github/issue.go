@@ -1,3 +1,7 @@
+// Copyright 2021 Diego Lima. All rights reserved.
+
+// Use of this source code is governed by a Apache license.
+// license that can be found in the LICENSE file.
 package github
 
 import (
@@ -10,8 +14,11 @@ import (
 	v41 "github.com/google/go-github/v41/github"
 )
 
+// IssueService handles communication with the issue event.
+// Issue Comment also refer to a pull request comment.
 type IssueService service
 
+// processIssueComment process the issue comment event payload.
 func (s *IssueService) processIssueComment(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.IssueCommentPayload) {
 	s.reRunPullRequestOverview(owner, pullRequest, p)
 	s.approve(owner, pullRequest, p)
@@ -20,6 +27,7 @@ func (s *IssueService) processIssueComment(owner *string, pullRequest *v41.PullR
 	s.reRunLaboratoryTest(owner, pullRequest, p)
 }
 
+// reRunPullRequestOverview re-run the pull request report (diff overview).
 func (s *IssueService) reRunPullRequestOverview(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.IssueCommentPayload) {
 	if pullRequest != nil {
 		if strings.EqualFold(p.Comment.Body, s.w.Config.Layout.PullRequest.OverViewCommand) {
@@ -28,6 +36,7 @@ func (s *IssueService) reRunPullRequestOverview(owner *string, pullRequest *v41.
 	}
 }
 
+// approve approves a pull request.
 func (s *IssueService) approve(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.IssueCommentPayload) {
 	if pullRequest != nil {
 		if strings.EqualFold(p.Comment.Body, s.w.Config.Layout.PullRequest.ApproveCommand) {
@@ -43,6 +52,7 @@ func (s *IssueService) approve(owner *string, pullRequest *v41.PullRequest, p *g
 	}
 }
 
+// merge a pull request.
 func (s *IssueService) merge(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.IssueCommentPayload) {
 	if pullRequest != nil {
 		if strings.EqualFold(p.Comment.Body, s.w.Config.Layout.PullRequest.MergeCommand) {
@@ -51,6 +61,7 @@ func (s *IssueService) merge(owner *string, pullRequest *v41.PullRequest, p *ghw
 	}
 }
 
+// merge and delete the reference of the pull request.
 func (s *IssueService) mergeAndDelete(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.IssueCommentPayload) {
 	if pullRequest != nil {
 		if strings.EqualFold(p.Comment.Body, s.w.Config.Layout.PullRequest.MergeAndDeleteCommand) {
@@ -63,6 +74,7 @@ func (s *IssueService) mergeAndDelete(owner *string, pullRequest *v41.PullReques
 	}
 }
 
+// reRunLaboratoryTest re-run the pull request test suite.
 func (s *IssueService) reRunLaboratoryTest(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.IssueCommentPayload) {
 	if pullRequest != nil {
 		if strings.EqualFold(p.Comment.Body, s.w.Config.Layout.PullRequest.RunTestSuiteCommand) {

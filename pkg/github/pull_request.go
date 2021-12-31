@@ -1,3 +1,7 @@
+// Copyright 2021 Diego Lima. All rights reserved.
+
+// Use of this source code is governed by a Apache license.
+// license that can be found in the LICENSE file.
 package github
 
 import (
@@ -7,8 +11,10 @@ import (
 	v41 "github.com/google/go-github/v41/github"
 )
 
+// PullRequestService handles communication with the pull request event.
 type PullRequestService service
 
+// processPullRequest process the pull request event payload.
 func (s *PullRequestService) processPullRequest(owner *string, p *ghwebhooks.PullRequestPayload) {
 	s.createPullRequestOverview(owner, p)
 	if p.Action == "opened" || p.Action == "reopened" || p.Action == "edited" {
@@ -23,6 +29,7 @@ func (s *PullRequestService) processPullRequest(owner *string, p *ghwebhooks.Pul
 	}
 }
 
+// createPullRequestOverview create the pull request report (diff overview).
 func (s *PullRequestService) createPullRequestOverview(owner *string, p *ghwebhooks.PullRequestPayload) {
 	if (p.Action == "opened" || p.Action == "reopened") && s.w.Config.Layout.PullRequest.EnableOverview {
 		s.w.CreatePulllRequestOverviewComment(owner, p.Repository.Name, int(p.PullRequest.Number))

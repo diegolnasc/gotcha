@@ -1,3 +1,7 @@
+// Copyright 2021 Diego Lima. All rights reserved.
+
+// Use of this source code is governed by a Apache license.
+// license that can be found in the LICENSE file.
 package github
 
 import (
@@ -9,14 +13,17 @@ import (
 	v41 "github.com/google/go-github/v41/github"
 )
 
+// CheckService handles communication with the checkrun/checksuite event.
 type CheckService service
 
+// checkRunResult represents the result of a test case.
 type checkRunResult struct {
 	title  string
 	passed bool
 	body   string
 }
 
+// processCheckRun process the checkrun event payload.
 func (s *CheckService) processCheckRun(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.CheckRunPayload) {
 	if p.Action == "created" {
 		result, overralResults := s.runTestSuite(owner, pullRequest, p)
@@ -25,6 +32,7 @@ func (s *CheckService) processCheckRun(owner *string, pullRequest *v41.PullReque
 	}
 }
 
+// runTestSuite run the test suite.
 func (s *CheckService) runTestSuite(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.CheckRunPayload) ([]*checkRunResult, bool) {
 	var results []*checkRunResult
 	overralResults := true
@@ -49,6 +57,7 @@ func (s *CheckService) runTestSuite(owner *string, pullRequest *v41.PullRequest,
 	return results, overralResults
 }
 
+// isNamePatternValid check if the pull request name is valid.
 func (s *CheckService) isNamePatternValid(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.CheckRunPayload) *checkRunResult {
 	match, _ := regexp.MatchString(s.w.Config.Layout.PullRequest.TestSuite.NamePattern, *pullRequest.Title)
 	var body string
@@ -62,6 +71,7 @@ func (s *CheckService) isNamePatternValid(owner *string, pullRequest *v41.PullRe
 	}
 }
 
+// hasReviewers check if the pull request has reviewers.
 func (s *CheckService) hasReviewers(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.CheckRunPayload) *checkRunResult {
 	if len(pullRequest.RequestedReviewers) == 0 {
 		return &checkRunResult{
@@ -76,6 +86,7 @@ func (s *CheckService) hasReviewers(owner *string, pullRequest *v41.PullRequest,
 	}
 }
 
+// hasAssignees check if the pull request has assignees.
 func (s *CheckService) hasAssignees(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.CheckRunPayload) *checkRunResult {
 	if len(pullRequest.Assignees) == 0 {
 		return &checkRunResult{
@@ -90,6 +101,7 @@ func (s *CheckService) hasAssignees(owner *string, pullRequest *v41.PullRequest,
 	}
 }
 
+// hasLabels check if the pull request has labels.
 func (s *CheckService) hasLabels(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.CheckRunPayload) *checkRunResult {
 	if len(pullRequest.Labels) == 0 {
 		return &checkRunResult{
@@ -104,6 +116,7 @@ func (s *CheckService) hasLabels(owner *string, pullRequest *v41.PullRequest, p 
 	}
 }
 
+// updateCheckRunStatus update the check run status in github.
 func (s *CheckService) updateCheckRunStatus(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.CheckRunPayload, overralResults bool) {
 	var conclusion string
 	if overralResults {
@@ -117,6 +130,7 @@ func (s *CheckService) updateCheckRunStatus(owner *string, pullRequest *v41.Pull
 	})
 }
 
+// printResults comments the result of the test suite on the pull request.
 func (s *CheckService) printResults(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.CheckRunPayload, results []*checkRunResult, overralResults bool) {
 	var title string
 	var body bytes.Buffer

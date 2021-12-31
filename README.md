@@ -1,9 +1,10 @@
 <h2 align="center"> Gotcha Bot :robot: </h2>
 <h2 align="center">A app to automate engineers tasks</h2>
 
-![License](https://img.shields.io/github/license/diegolnasc/gotcha?style=plastic)
-![go-version](https://img.shields.io/static/v1?label=golang&message=1.17&color=informational&style=plastic)
-[![gotcha release (latest)](https://img.shields.io/github/v/release/diegolnasc/gotcha?sort=semver&style=plastic)](https://github.com/diegolnasc/gotcha/releases)
+[![go-doc](https://godoc.org/github.com/diegolnasc/gotcha?status.svg)](https://godoc.org/github.com/diegolnasc/gotcha)
+[![go-report](https://goreportcard.com/badge/github.com/diegolnasc/gotcha)](https://goreportcard.com/report/github.com/diegolnasc/gotcha)
+![license](https://img.shields.io/github/license/diegolnasc/gotcha?style=plastic)
+[![gotcha-release(latest)](https://img.shields.io/github/v/release/diegolnasc/gotcha?sort=semver&style=plastic)](https://github.com/diegolnasc/gotcha/releases)
 
 ---
 ## What can :robot: do?
