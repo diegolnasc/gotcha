@@ -1,3 +1,7 @@
+// Copyright 2021 Diego Lima. All rights reserved.
+
+// Use of this source code is governed by a Apache license.
+// license that can be found in the LICENSE file.
 package github
 
 import (
@@ -7,6 +11,7 @@ import (
 	ghwebhooks "github.com/go-playground/webhooks/v6/github"
 )
 
+// Handler webhook event handler.
 func (w *Worker) Handler(response http.ResponseWriter, request *http.Request) {
 	log.Println(request.Header.Get("X-GitHub-Event"))
 	hook, err := ghwebhooks.New(ghwebhooks.Options.Secret(w.Config.Github.WebhookSecret))

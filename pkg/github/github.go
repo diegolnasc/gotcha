@@ -1,3 +1,7 @@
+// Copyright 2021 Diego Lima. All rights reserved.
+
+// Use of this source code is governed by a Apache license.
+// license that can be found in the LICENSE file.
 package github
 
 import (
@@ -15,11 +19,13 @@ type service struct {
 	w Worker
 }
 
+// Worker represents the general configuration to run a provider.
 type Worker struct {
 	Config config.Settings
 	Client v41.Client
 }
 
+// getOwner get an owner of a provider.
 func getOwner(auth *config.Settings) (*string, error) {
 	if len(auth.Github.Organization) > 0 {
 		return &auth.Github.Organization, nil
@@ -29,6 +35,7 @@ func getOwner(auth *config.Settings) (*string, error) {
 	return nil, errors.New("owner not configured")
 }
 
+// isUserAuthorized check if the user running a command is authorized.
 func isUserAuthorized(auth *config.Settings, user *string, repo *string) bool {
 	result := false
 	if user != nil && repo != nil {
@@ -54,6 +61,7 @@ func isUserAuthorized(auth *config.Settings, user *string, repo *string) bool {
 	return result
 }
 
+// New initialize a Worker.
 func New(auth *config.Settings) *Worker {
 	var appTransport *ghinstallation.AppsTransport
 	var installationTransport *ghinstallation.Transport

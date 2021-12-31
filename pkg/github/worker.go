@@ -1,3 +1,7 @@
+// Copyright 2021 Diego Lima. All rights reserved.
+
+// Use of this source code is governed by a Apache license.
+// license that can be found in the LICENSE file.
 package github
 
 import (
@@ -8,11 +12,13 @@ import (
 	v41 "github.com/google/go-github/v41/github"
 )
 
+// processPullRequestEvent start a pull request event process.
 func (s *PullRequestService) processPullRequestEvent(p *ghwebhooks.PullRequestPayload) {
 	owner, _ := getOwner(&s.w.Config)
 	s.processPullRequest(owner, p)
 }
 
+// processIssueCommentEvent start an issue comment event process.
 func (s *IssueService) processIssueCommentEvent(p *ghwebhooks.IssueCommentPayload) {
 	if isUserAuthorized(&s.w.Config, &p.Sender.Login, &p.Repository.Name) && p.Action == "created" {
 		var pullRequest *v41.PullRequest
@@ -29,6 +35,7 @@ func (s *IssueService) processIssueCommentEvent(p *ghwebhooks.IssueCommentPayloa
 	}
 }
 
+// processCheckRunEvent start an check run event process.
 func (s *CheckService) processCheckRunEvent(p *ghwebhooks.CheckRunPayload) {
 	if p.CheckRun.App.ID == int64(s.w.Config.Github.AppID) {
 		var pullRequest *v41.PullRequest
@@ -41,8 +48,8 @@ func (s *CheckService) processCheckRunEvent(p *ghwebhooks.CheckRunPayload) {
 				return
 			}
 			if len(*chekRun.ExternalID) > 0 {
-				pullRequestId, _ := strconv.Atoi(*chekRun.ExternalID)
-				pullRequest, _ = s.w.GetPullRequest(*owner, p.Repository.Name, pullRequestId)
+				pullRequestID, _ := strconv.Atoi(*chekRun.ExternalID)
+				pullRequest, _ = s.w.GetPullRequest(*owner, p.Repository.Name, pullRequestID)
 			}
 		}
 		s.processCheckRun(owner, pullRequest, p)
