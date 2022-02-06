@@ -1,0 +1,93 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gotcha-config
+data:
+  config.yaml: |
+    layout:
+        administration:
+            permission:
+                users:
+                    - diegolnasc
+                repositories:
+                    - repository:
+                        name : trial
+                        users:
+                            - diegolnasc
+        pullRequest:
+            enableOverview: true
+            overViewCommand: run overview
+            approveCommand: lgtm
+            runTestSuiteCommand: run testsuite
+            mergeCommand: merge
+            mergeAndDeleteCommand: merge and delete
+            testSuite:
+                namePattern: (?P<type>feat|fix|refactor|style|docs|build|chore)(?P<separator>:) (?P<body>.+)
+                reviewers: false
+                assignees: true
+                labels: true
+
+    github:
+        appId: 12345
+        organization: 
+        user: diegolnasc
+        webhookSecret: secret
+        privateKeyLocation: 
+        privateKey:
+        events: 
+            - issue_comment
+            - pull_request
+            - pull_request_review_comment
+            - pull_request_review
+            - check_run 
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gotcha
+  labels:
+    app: gotcha
+    tier: web
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 3000
+  selector:
+    app: gotcha
+    tier: web
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gotcha
+  labels:
+    app: gotcha
+spec:
+  selector:
+    matchLabels:
+      app: gotcha
+      tier: web
+  template:
+    metadata:
+      labels:
+        app: gotcha
+        tier: web
+    spec:
+      containers:
+      - name: gotcha-app
+        image: diegolnasc/gotcha:latest
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: 2m
+        volumeMounts:
+        - name: config-volume
+          mountPath: /go/gotcha/build/config.yaml
+          subPath: config.yaml
+      volumes:
+        - name: config-volume
+          configMap:
+            name: gotcha-config
