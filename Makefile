@@ -2,7 +2,7 @@ BINARY_NAME=gotcha
 BINARY_FOLDER=bin
 BINARY_NAME=gotcha
 GOOS=linux
-GOARCH=amd64
+GOARCH=amd64 ddf
 
 build: clean
 	mkdir ${BINARY_FOLDER} && \
