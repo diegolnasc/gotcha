@@ -85,7 +85,7 @@ spec:
             cpu: 2m
         volumeMounts:
         - name: config-volume
-          mountPath: /go/gotcha/build/config.yaml
+          mountPath: /build/config.yaml
           subPath: config.yaml
       volumes:
         - name: config-volume
