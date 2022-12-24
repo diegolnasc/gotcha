@@ -9,12 +9,11 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	ghwebhooks "github.com/go-playground/webhooks/v6/github"
 )
 
-// Handler webhook event handler.
-func (w *Worker) Handler(response http.ResponseWriter, request *http.Request) {
-	log.Println(request.Header.Get("X-GitHub-Event"))
+func (w *GitHubWorker) Events(c *gin.Context) {
 	hook, err := ghwebhooks.New(ghwebhooks.Options.Secret(w.Config.Github.WebhookSecret))
 	if err != nil {
 		log.Panic(err)
@@ -23,28 +22,27 @@ func (w *Worker) Handler(response http.ResponseWriter, request *http.Request) {
 	for _, event := range w.Config.Github.Events {
 		events = append(events, ghwebhooks.Event(event))
 	}
-	payload, err := hook.Parse(request, events...)
+	payload, err := hook.Parse(c.Request, events...)
 	if err != nil {
 		if err == ghwebhooks.ErrEventNotFound {
-			response.WriteHeader(http.StatusOK)
+			c.Writer.WriteHeader(http.StatusOK)
 		} else {
-			response.WriteHeader(http.StatusInternalServerError)
+			c.Writer.WriteHeader(http.StatusInternalServerError)
 		}
 		return
 	}
 	switch payload := payload.(type) {
 	case ghwebhooks.PullRequestPayload:
-		service := &PullRequestService{w: *w}
+		service := &PullRequestService{w: w}
 		go service.processPullRequestEvent(&payload)
 	case ghwebhooks.IssueCommentPayload:
-		service := &IssueService{w: *w}
+		service := &IssueService{w: w}
 		go service.processIssueCommentEvent(&payload)
 	case ghwebhooks.CheckRunPayload:
-		service := &CheckService{w: *w}
+		service := &CheckService{w: w}
 		go service.processCheckRunEvent(&payload)
 	default:
 		log.Println("missing handler")
 	}
-
-	response.WriteHeader(http.StatusOK)
+	c.Writer.WriteHeader(http.StatusOK)
 }
