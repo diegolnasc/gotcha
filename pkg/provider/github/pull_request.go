@@ -6,6 +6,7 @@
 package github
 
 import (
+	"log"
 	"strconv"
 
 	ghwebhooks "github.com/go-playground/webhooks/v6/github"
@@ -29,7 +30,7 @@ func (s *PullRequestService) processPullRequest(owner *string, p *ghwebhooks.Pul
 				DetailsURL: &p.PullRequest.HTMLURL,
 				ExternalID: &pullRequestNumber,
 			}); err != nil {
-				//erro
+				log.Printf("Unable to complete the provider call %s.", err)
 			}
 		}
 	}

@@ -18,8 +18,8 @@ const (
 // config is the server command configuration.
 type config struct {
 	providerWorker handler.ProviderWorker
-	providerName   Provider
-	config         c.Settings
+	// providerName   Provider
+	config c.Settings
 }
 
 // Init returns the command cli.
