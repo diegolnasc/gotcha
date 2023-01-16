@@ -11,7 +11,7 @@ var RootCmd = &cobra.Command{
 	Short: "Pull Request Quality Reviewer",
 }
 
-// Starts the root-cli.
+// Execute starts the root-cli.
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
 		os.Exit(1)

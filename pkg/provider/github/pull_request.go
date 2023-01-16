@@ -22,13 +22,15 @@ func (s *PullRequestService) processPullRequest(owner *string, p *ghwebhooks.Pul
 		if p.Action == "edited" && p.Changes.Title == nil {
 		} else {
 			pullRequestNumber := strconv.Itoa(int(p.PullRequest.Number))
-			s.w.CreateCheckRun(*owner, p.Repository.Name, v41.CreateCheckRunOptions{
+			if _, err := s.w.CreateCheckRun(*owner, p.Repository.Name, v41.CreateCheckRunOptions{
 				Name:       "Laboratory test",
 				Status:     v41.String("in_progress"),
 				HeadSHA:    p.PullRequest.Head.Sha,
 				DetailsURL: &p.PullRequest.HTMLURL,
 				ExternalID: &pullRequestNumber,
-			})
+			}); err != nil {
+				//erro
+			}
 		}
 	}
 }

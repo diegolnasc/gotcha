@@ -15,14 +15,14 @@ const (
 	GitHub Provider = "github"
 )
 
-// Server command configuration.
+// config is the server command configuration.
 type config struct {
 	providerWorker handler.ProviderWorker
 	providerName   Provider
 	config         c.Settings
 }
 
-// Returns the command cli
+// Init returns the command cli.
 func Init() *cobra.Command {
 	c := &config{}
 	return &cobra.Command{
@@ -42,10 +42,16 @@ func Init() *cobra.Command {
 	}
 }
 
+//preRun loads the version control provider configuration.
 func (c *config) preRun() {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath("./build")
-	viper.ReadInConfig()
-	viper.Unmarshal(&c.config)
+	if err := viper.ReadInConfig(); err != nil {
+		panic("Unable to read the configuration file (config.yaml).")
+	}
+	if err := viper.Unmarshal(&c.config); err != nil {
+		panic("Unable to unmarshal the configuration.")
+	}
+
 }

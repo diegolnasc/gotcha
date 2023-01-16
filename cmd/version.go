@@ -6,12 +6,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// Version configuration.
+// GotchaVersion shows the version of the application.
 type GotchaVersion struct {
 	Version string
 }
 
-// Returns the command cli
+// Init returns the command cli.
 func (v *GotchaVersion) Init() *cobra.Command {
 	return &cobra.Command{
 		Use:   "version",

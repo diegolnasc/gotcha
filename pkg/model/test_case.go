@@ -90,6 +90,7 @@ func (cfg *Layout) HasLabels(hasLabels bool) *Result {
 	return &Result{}
 }
 
+//GetOverralResults creates the report that will be returned based on the test suite.
 func (cfg *Layout) GetOverralResults(results []*Result) string {
 	var title string
 	var body bytes.Buffer

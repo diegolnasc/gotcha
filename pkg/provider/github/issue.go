@@ -62,7 +62,7 @@ func (s *IssueService) merge(owner *string, pullRequest *v41.PullRequest, p *ghw
 	}
 }
 
-// merge and delete the reference of the pull request.
+// mergeAndDelete merge and delete the reference of the pull request.
 func (s *IssueService) mergeAndDelete(owner *string, pullRequest *v41.PullRequest, p *ghwebhooks.IssueCommentPayload) {
 	if pullRequest != nil {
 		if strings.EqualFold(p.Comment.Body, s.w.Config.Layout.PullRequest.MergeAndDeleteCommand) {

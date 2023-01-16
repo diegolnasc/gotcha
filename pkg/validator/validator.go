@@ -8,7 +8,7 @@ var availableProviders = []cmd.Provider{
 	cmd.GitHub,
 }
 
-// Check if current provider is implemented.
+// IsProviderAvailable check if current provider is implemented.
 func IsProviderAvailable(provider string) bool {
 	for _, p := range availableProviders {
 		if p == cmd.Provider(provider) {

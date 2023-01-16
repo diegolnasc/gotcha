@@ -13,7 +13,8 @@ import (
 	ghwebhooks "github.com/go-playground/webhooks/v6/github"
 )
 
-func (w *GitHubWorker) Events(c *gin.Context) {
+// Events github events handler.
+func (w *Worker) Events(c *gin.Context) {
 	hook, err := ghwebhooks.New(ghwebhooks.Options.Secret(w.Config.Github.WebhookSecret))
 	if err != nil {
 		log.Panic(err)

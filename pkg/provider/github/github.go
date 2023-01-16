@@ -17,11 +17,11 @@ import (
 )
 
 type service struct {
-	w *GitHubWorker
+	w *Worker
 }
 
 // Worker represents the general configuration to run the github provider.
-type GitHubWorker struct {
+type Worker struct {
 	Config model.Settings
 	Client v41.Client
 }
@@ -62,8 +62,8 @@ func isUserAuthorized(auth *model.Settings, user *string, repo *string) bool {
 	return result
 }
 
-// Initialize a GitHub handler Worker.
-func New(cfg *model.Settings) *GitHubWorker {
+// New initialize a GitHub handler Worker.
+func New(cfg *model.Settings) *Worker {
 	var appTransport *ghinstallation.AppsTransport
 	var installationTransport *ghinstallation.Transport
 	var githubInstallation *v41.Installation
@@ -87,7 +87,7 @@ func New(cfg *model.Settings) *GitHubWorker {
 	installationID := githubInstallation.GetID()
 	installationTransport = ghinstallation.NewFromAppsTransport(appTransport, installationID)
 
-	return &GitHubWorker{
+	return &Worker{
 		Config: *cfg,
 		Client: *v41.NewClient(&http.Client{Transport: installationTransport}),
 	}
