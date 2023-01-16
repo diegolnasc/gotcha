@@ -3,14 +3,7 @@
 // Use of this source code is governed by a Apache license.
 // license that can be found in the LICENSE file.
 
-package config
-
-import (
-	"io/ioutil"
-	"log"
-
-	"gopkg.in/yaml.v3"
-)
+package model
 
 // Settings represents the configuration and authorization aspects.
 type Settings struct {
@@ -74,19 +67,4 @@ type Github struct {
 	PrivateKeyLocation string   `yaml:"privateKeyLocation"`
 	PrivateKey         string   `yaml:"privateKey"`
 	Events             []string `yaml:"events"`
-}
-
-// ReadConf initialize the configuration.
-func (c *Settings) ReadConf() {
-	yamlFile, err := ioutil.ReadFile("build/config-local.yaml")
-	if err != nil {
-		yamlFile, err = ioutil.ReadFile("build/config.yaml")
-		if err != nil {
-			log.Panic("yamlFile not found: ", err)
-		}
-	}
-	err = yaml.Unmarshal(yamlFile, c)
-	if err != nil {
-		log.Fatalf("error reading the yamlFile %v", err)
-	}
 }

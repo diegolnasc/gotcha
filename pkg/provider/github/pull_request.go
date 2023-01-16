@@ -6,6 +6,7 @@
 package github
 
 import (
+	"log"
 	"strconv"
 
 	ghwebhooks "github.com/go-playground/webhooks/v6/github"
@@ -18,15 +19,20 @@ type PullRequestService service
 // processPullRequest process the pull request event payload.
 func (s *PullRequestService) processPullRequest(owner *string, p *ghwebhooks.PullRequestPayload) {
 	s.createPullRequestOverview(owner, p)
-	if p.Action == "opened" || p.Action == "reopened" || p.Action == "edited" {
-		pullRequestNumber := strconv.Itoa(int(p.PullRequest.Number))
-		s.w.CreateCheckRun(*owner, p.Repository.Name, v41.CreateCheckRunOptions{
-			Name:       "Laboratory test",
-			Status:     v41.String("in_progress"),
-			HeadSHA:    p.PullRequest.Head.Sha,
-			DetailsURL: &p.PullRequest.HTMLURL,
-			ExternalID: &pullRequestNumber,
-		})
+	if p.Action == "opened" || p.Action == "reopened" || p.Action == "edited" || p.Action == "synchronize" {
+		if p.Action == "edited" && p.Changes.Title == nil {
+		} else {
+			pullRequestNumber := strconv.Itoa(int(p.PullRequest.Number))
+			if _, err := s.w.CreateCheckRun(*owner, p.Repository.Name, v41.CreateCheckRunOptions{
+				Name:       "Laboratory test",
+				Status:     v41.String("in_progress"),
+				HeadSHA:    p.PullRequest.Head.Sha,
+				DetailsURL: &p.PullRequest.HTMLURL,
+				ExternalID: &pullRequestNumber,
+			}); err != nil {
+				log.Printf("Unable to complete the provider call %s.", err)
+			}
+		}
 	}
 }
 
