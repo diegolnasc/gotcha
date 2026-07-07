@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.0](https://www.github.com/diegolnasc/gotcha/compare/v1.2.0...v1.3.0) (2023-02-23)
+
+
+### Features
+
+* k8s-manifest ([ff0b7a8](https://www.github.com/diegolnasc/gotcha/commit/ff0b7a88378d6911d70c5359b3a0ff3b8dc52856))
+* lint workflow ([cc19175](https://www.github.com/diegolnasc/gotcha/commit/cc19175db40614341001d6ba1df21a936b2eceb3))
+
 ## [1.2.0](https://www.github.com/diegolnasc/gotcha/compare/v1.1.0...v1.2.0) (2021-12-31)
 
 
